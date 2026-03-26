@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, User } from "lucide-react";
+import { Menu, X, User, LogOut } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 import logo from "@/assets/logo.png";
 
 const navItems = [
@@ -18,6 +19,10 @@ const navItems = [
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, profile, signOut } = useAuth();
+
+  const displayName = profile?.full_name || user?.email?.split("@")[0] || "";
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-glass">
@@ -44,13 +49,32 @@ const Navbar = () => {
         </div>
 
         <div className="hidden lg:flex items-center gap-3">
-          <Link
-            to="/dashboard"
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity"
-          >
-            <User size={16} />
-            Connexion
-          </Link>
+          {user ? (
+            <div className="flex items-center gap-2">
+              <Link
+                to="/dashboard"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity"
+              >
+                <User size={16} />
+                {displayName || "Dashboard"}
+              </Link>
+              <button
+                onClick={async () => { await signOut(); navigate("/"); }}
+                className="p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                title="Déconnexion"
+              >
+                <LogOut size={16} />
+              </button>
+            </div>
+          ) : (
+            <Link
+              to="/auth"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity"
+            >
+              <User size={16} />
+              Connexion
+            </Link>
+          )}
         </div>
 
         {/* Mobile toggle */}
@@ -83,14 +107,34 @@ const Navbar = () => {
                   {item.label}
                 </Link>
               ))}
-              <Link
-                to="/dashboard"
-                onClick={() => setOpen(false)}
-                className="mt-2 flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-gradient-primary text-primary-foreground text-sm font-semibold"
-              >
-                <User size={16} />
-                Connexion
-              </Link>
+              {user ? (
+                <>
+                  <Link
+                    to="/dashboard"
+                    onClick={() => setOpen(false)}
+                    className="mt-2 flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-gradient-primary text-primary-foreground text-sm font-semibold"
+                  >
+                    <User size={16} />
+                    {displayName || "Dashboard"}
+                  </Link>
+                  <button
+                    onClick={async () => { setOpen(false); await signOut(); navigate("/"); }}
+                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-destructive hover:bg-destructive/10 text-sm font-medium"
+                  >
+                    <LogOut size={16} />
+                    Déconnexion
+                  </button>
+                </>
+              ) : (
+                <Link
+                  to="/auth"
+                  onClick={() => setOpen(false)}
+                  className="mt-2 flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-gradient-primary text-primary-foreground text-sm font-semibold"
+                >
+                  <User size={16} />
+                  Connexion
+                </Link>
+              )}
             </div>
           </motion.div>
         )}
