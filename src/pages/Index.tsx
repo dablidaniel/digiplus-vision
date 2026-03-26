@@ -1,5 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ScrollReveal from "@/components/ScrollReveal";
+import ParallaxSection from "@/components/ParallaxSection";
 import HeroSection from "@/components/home/HeroSection";
 import VideoSection from "@/components/home/VideoSection";
 import ServicesSection from "@/components/home/ServicesSection";
@@ -16,16 +18,47 @@ const Index = () => (
   <div className="min-h-screen bg-background">
     <Navbar />
     <HeroSection />
-    <VideoSection />
-    <ServicesSection />
-    <BlogSection />
-    <ResourcesSection />
-    <EventsSection />
-    <CatalogueSection />
-    <FormationsSection />
-    <TestimonialsSection />
-    <GallerySection />
-    <ContactSection />
+
+    <ScrollReveal>
+      <VideoSection />
+    </ScrollReveal>
+
+    <ParallaxSection speed={0.15}>
+      <ServicesSection />
+    </ParallaxSection>
+
+    <ScrollReveal direction="left">
+      <BlogSection />
+    </ScrollReveal>
+
+    <ScrollReveal direction="right" delay={0.1}>
+      <ResourcesSection />
+    </ScrollReveal>
+
+    <ParallaxSection speed={0.2}>
+      <EventsSection />
+    </ParallaxSection>
+
+    <ScrollReveal>
+      <CatalogueSection />
+    </ScrollReveal>
+
+    <ParallaxSection speed={0.1}>
+      <FormationsSection />
+    </ParallaxSection>
+
+    <ScrollReveal direction="up" delay={0.1}>
+      <TestimonialsSection />
+    </ScrollReveal>
+
+    <ScrollReveal>
+      <GallerySection />
+    </ScrollReveal>
+
+    <ScrollReveal direction="up">
+      <ContactSection />
+    </ScrollReveal>
+
     <Footer />
   </div>
 );
